@@ -79,6 +79,32 @@ function createPoles(posX, posY, posZ, rotX, rotY, rotZ){
     scene.add(polesMesh)
 }
 
+// 5.g. Button (box and sphere) INCOMPLETE!! blm bisa berubah warna dan di interact
+function createButtonBox(){
+    let buttonBoxGeo = new THREE.BoxGeometry(10, 16.5, 14.5)
+    let buttonBoxMat = new THREE.MeshPhongMaterial({
+        color: "#848482"
+    })
+    let buttonBoxMesh = new THREE.Mesh(buttonBoxGeo, buttonBoxMat)
+    buttonBoxMesh.position.set(-43, 3, 65)
+    buttonBoxMesh.rotation.set(0, -Math.PI/6, 0)
+    buttonBoxMesh.castShadow = true
+    buttonBoxMesh.receiveShadow = true
+    scene.add(buttonBoxMesh)
+}
+
+function createButtonSphere(){
+    let buttonSphereGeo = new THREE.SphereGeometry(4.5, 32, 16)
+    let buttonSphereMat = new THREE.MeshPhongMaterial({
+        color: "#dc143c"
+    })
+    let buttonSphereMesh = new THREE.Mesh(buttonSphereGeo, buttonSphereMat)
+    buttonSphereMesh.position.set(-46, 3, 63)
+    buttonSphereMesh.castShadow = true
+    buttonSphereMesh.receiveShadow = true
+    scene.add(buttonSphereMesh)
+}
+
 // 4.a. Ambient Light
 function createAmbientLight(){
     let light = new THREE.AmbientLight("#404040")
@@ -135,6 +161,8 @@ function init() {
     createTires(-55, -5, -40, 0, -(Math.PI/2 + (Math.PI/9 * 2)), 0)
     createPoles(0, 15, 35, -Math.PI/6, 0, 0)
     createPoles(0, 15, -35, Math.PI/6, 0, 0)
+    createButtonBox()
+    createButtonSphere()
 }
 
 function keyboardListener(event){
