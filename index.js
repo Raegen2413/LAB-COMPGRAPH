@@ -51,6 +51,20 @@ function createCrateB(width, height, depth, posX, posY, posZ, rotX, rotY, rotZ){
     scene.add(crateBMesh)
 }
 
+// 5.e. Tires
+function createTires(posX, posY, posZ, rotX, rotY, rotZ){
+    let tiresGeo = new THREE.TorusGeometry(5, 2.5, 16, 100)
+    let tiresMat = new THREE.MeshStandardMaterial({
+        color: "#3e444c"
+    })
+    let tiresMesh = new THREE.Mesh(tiresGeo, tiresMat)
+    tiresMesh.position.set(posX, posY, posZ)
+    tiresMesh.rotation.set(rotX, rotY, rotZ)
+    tiresMesh.castShadow = true
+    tiresMesh.receiveShadow = true
+    scene.add(tiresMesh)
+}
+
 // 4.a. Ambient Light
 function createAmbientLight(){
     let light = new THREE.AmbientLight("#404040")
@@ -100,6 +114,11 @@ function init() {
     createCrateA(10, 15, 10, -40, 2.5, 30, 0, -Math.PI/4, 0)
     createCrateB(20, 20, 20, 30, 5, 40, 0, Math.PI/3, 0)
     createCrateB(40, 15, 30, 30, 2.5, -60, 0, -Math.PI/6, 0)
+    createTires(-70, -5, 0, 0, Math.PI/2, 0)
+    createTires(-65, -5, 20, 0, Math.PI/2 + (Math.PI/9 * 1), 0)
+    createTires(-65, -5, -20, 0, -(Math.PI/2 + (Math.PI/9 * 1)), 0)
+    createTires(-55, -5, 40, 0, Math.PI/2 + (Math.PI/9 * 2), 0)
+    createTires(-55, -5, -40, 0, -(Math.PI/2 + (Math.PI/9 * 2)), 0)
 }
 
 function keyboardListener(event){
