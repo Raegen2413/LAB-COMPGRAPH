@@ -4,6 +4,10 @@ import {OrbitControls} from "./three.js/examples/jsm/controls/OrbitControls.js"
 var scene, renderer, control, mouse
 var currentCam, fixedCam, freeCam
 
+function Test(){
+    
+}
+
 // 5.a. Ground Object
 function createGround(){
     let groundGeo = new THREE.PlaneGeometry(1000, 1000)
