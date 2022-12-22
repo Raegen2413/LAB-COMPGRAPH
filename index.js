@@ -5,7 +5,7 @@ var scene, renderer, control, mouse
 var currentCam, fixedCam, freeCam
 
 function Test(){
-    
+    //
 }
 
 // 5.a. Ground Object
