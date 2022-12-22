@@ -65,6 +65,20 @@ function createTires(posX, posY, posZ, rotX, rotY, rotZ){
     scene.add(tiresMesh)
 }
 
+// 5.f. Poles
+function createPoles(posX, posY, posZ, rotX, rotY, rotZ){
+    let polesGeo = new THREE.CylinderGeometry(1, 1, 50, 16)
+    let polesMat = new THREE.MeshPhongMaterial({
+        color: "#646FD4"
+    })
+    let polesMesh = new THREE.Mesh(polesGeo, polesMat)
+    polesMesh.position.set(posX, posY, posZ)
+    polesMesh.rotation.set(rotX, rotY, rotZ)
+    polesMesh.castShadow = true
+    polesMesh.receiveShadow = true
+    scene.add(polesMesh)
+}
+
 // 4.a. Ambient Light
 function createAmbientLight(){
     let light = new THREE.AmbientLight("#404040")
@@ -119,6 +133,8 @@ function init() {
     createTires(-65, -5, -20, 0, -(Math.PI/2 + (Math.PI/9 * 1)), 0)
     createTires(-55, -5, 40, 0, Math.PI/2 + (Math.PI/9 * 2), 0)
     createTires(-55, -5, -40, 0, -(Math.PI/2 + (Math.PI/9 * 2)), 0)
+    createPoles(0, 15, 35, -Math.PI/6, 0, 0)
+    createPoles(0, 15, -35, Math.PI/6, 0, 0)
 }
 
 function keyboardListener(event){
