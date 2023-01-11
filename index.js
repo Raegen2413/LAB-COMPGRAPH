@@ -1,5 +1,6 @@
 import * as THREE from "./three.js/build/three.module.js"
-import {OrbitControls} from "./three.js/examples/jsm/controls/OrbitControls.js"
+import { OrbitControls } from "./three.js/examples/jsm/controls/OrbitControls.js"
+import { GLTFLoader } from "./three.js/examples/jsm/loaders/GLTFLoader.js"
 
 var scene, renderer, control, mouse, textureLoader
 var currentCam, fixedCam, freeCam
@@ -18,9 +19,26 @@ function createGround(){
 }
 
 // 5.b. Hot Air Balloon
-function createBalloon(){
-    // load model
-    // cast and recieve shadow
+function renderBalloon(){
+    let loader = new GLTFLoader()
+    loader.load('./assets/model/scene.gltf', function (gltf){
+        let model = gltf.scene
+        let animation = gltf.animations[0]
+        let mixer = new THREE.AnimationMixer(model)
+        let action = mixer.clipAction(animation)
+        model.castShadow = true
+        model.receiveShadow = true
+        action.play()
+        model.scale.set(0.25, 0.25, 0.25)
+        scene.add(model)
+        animate()
+        function animate(){
+            renderer.render(scene, currentCam)
+            requestAnimationFrame(animate)
+            let delta = new THREE.Clock().getDelta()
+            mixer.update(delta)
+        }
+    })
 }
 
 // 5.c. Crate A
@@ -50,6 +68,9 @@ function createCrateB(width, height, depth, posX, posY, posZ, rotX, rotY, rotZ){
     crateBMesh.receiveShadow = true
     scene.add(crateBMesh)
 }
+
+// 5.c. Tires
+
 
 // 4.a. Ambient Light
 function createAmbientLight(){
@@ -87,14 +108,14 @@ function init() {
     textureLoader = new THREE.TextureLoader()
 
     control = new OrbitControls(freeCam, renderer.domElement)
-    currentCam = fixedCam
+    currentCam = freeCam
 
     createAmbientLight()
     createSpotLight(1, -100, 0, 100)
     createSpotLight(1, -100, 0, -100)
     createSpotLight(0.5, 0, 200, 0, Math.PI/4 + Math.PI/6)
     createGround()
-    createBalloon()
+    renderBalloon();
     createCrateA(10, 10, 10, -30, 0, -40, 0, 0, 0)
     createCrateA(5, 5, 5, -30, -2, -48, Math.PI/6, 0, 0)
     createCrateA(10, 15, 10, -40, 2.5, 30, 0, -Math.PI/4, 0)
