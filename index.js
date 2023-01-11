@@ -23,13 +23,13 @@ function renderBalloon(){
     let loader = new GLTFLoader()
     loader.load('./assets/model/scene.gltf', function (gltf){
         let model = gltf.scene
-        let animation = gltf.animations[0]
+        // let animation = gltf.animations[0]
         let mixer = new THREE.AnimationMixer(model)
-        let action = mixer.clipAction(animation)
+        // let action = mixer.clipAction(animation)
         model.castShadow = true
         model.receiveShadow = true
-        action.play()
-        model.scale.set(0.25, 0.25, 0.25)
+        // action.play()
+        model.scale.set(0.1, 0.1, 0.1)
         scene.add(model)
         animate()
         function animate(){
