@@ -92,7 +92,7 @@ function createPoles(number, posX, posY, posZ, rotX, rotY, rotZ){
     scene.add(pole[number])
 }
 
-// 5.g. Button (box and sphere) INCOMPLETE!! blm bisa berubah warna dan di interact
+// 5.g. Button (box and sphere)
 function createButtonBox(){
     let buttonBoxGeo = new THREE.BoxGeometry(10, 16.5, 14.5)
     let buttonBoxMat = new THREE.MeshPhongMaterial({
