@@ -1,6 +1,7 @@
 import * as THREE from "./three.js/build/three.module.js"
 import { OrbitControls } from "./three.js/examples/jsm/controls/OrbitControls.js"
 import { GLTFLoader } from "./three.js/examples/jsm/loaders/GLTFLoader.js"
+import {FontLoader} from './three.js/examples/jsm/loaders/FontLoader.js'
 
 var scene, renderer, control, mouse, textureLoader
 var currentCam, fixedCam, freeCam
@@ -158,6 +159,54 @@ function createSpotLight(intensity, x, y, z, angle){
     scene.add(light)
 }
 
+// 5.h. Text\
+function createFont(){
+    let loader = new FontLoader()
+}
+
+// 6 Skybox
+function createSkybox(){
+    let skyboxGeo = new THREE.BoxGeometry(1000, 1000, 1000)
+    let loader = new THREE.TextureLoader()
+
+    let right = loader.load('./assets/skybox/dawn_right.png')
+    let left = loader.load('./assets/skybox/dawn_left.png')
+    let top = loader.load('./assets/skybox/dawn_top.png')
+    let bot = loader.load('./assets/skybox/dawn_bottom.png')
+    let front = loader.load('./assets/skybox/dawn_front.png')
+    let back = loader.load('./assets/skybox/dawn_back.png')
+
+    let skyboxMat = [
+        new THREE.MeshBasicMaterial({
+            map : right,
+            side:THREE.BackSide
+        }),
+        new THREE.MeshBasicMaterial({
+            map : left,
+            side:THREE.BackSide
+        }),
+        new THREE.MeshBasicMaterial({
+            map : top,
+            side:THREE.BackSide
+        }),
+        new THREE.MeshBasicMaterial({
+            map : bot,
+            side:THREE.BackSide
+        }),
+        new THREE.MeshBasicMaterial({
+            map : front,
+            side:THREE.BackSide
+        }),
+        new THREE.MeshBasicMaterial({
+            map : back,
+            side:THREE.BackSide
+        }),
+    ]
+    
+    let skyboxMesh = new THREE.Mesh(skyboxGeo, skyboxMat)
+    scene.add(skyboxMesh)
+}
+
 /**********************************************************/
 function init() {
     // 2. Scene
@@ -203,6 +252,7 @@ function init() {
     createPoles(2, 0, 15, -35, Math.PI/6, 0, 0)
     createButtonBox()
     createButtonSphere()
+    createSkybox()
 }
 /**********************************************************/
 
