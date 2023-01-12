@@ -1,7 +1,8 @@
 import * as THREE from "./three.js/build/three.module.js"
 import { OrbitControls } from "./three.js/examples/jsm/controls/OrbitControls.js"
 import { GLTFLoader } from "./three.js/examples/jsm/loaders/GLTFLoader.js"
-import {FontLoader} from './three.js/examples/jsm/loaders/FontLoader.js'
+import { FontLoader } from './three.js/examples/jsm/loaders/FontLoader.js'
+import { TextGeometry } from './three.js/examples/jsm/geometries/TextGeometry.js'
 
 var scene, renderer, control, mouse, textureLoader
 var currentCam, fixedCam, freeCam
@@ -151,16 +152,19 @@ function createSpotLight(intensity, x, y, z, angle){
 // 5.h. Text
 function createFont(){
     let loader = new FontLoader()
-    loader.load('./three.js/examples/fonts/helvetiker_bold.typeface.json', function (font1){
+    loader.load('./three.js/examples/fonts/helvetiker_bold.typeface.json', function (font){
         
         let geo = new TextGeometry
         ('Click Me!',{
-            font:font1,
+            font:font,
             size:10,
             height:2
         })
-        let material = new THREE.MeshPhongMaterial()
-        mesh = new THREE.Mesh(geo, material)
+        let material = new THREE.MeshPhongMaterial({
+            color: "#FF5B00",
+            speculare: "#990000"
+        })
+        let mesh = new THREE.Mesh(geo, material)
         mesh.position.set(-35,25,50)
         mesh.rotation.set(0, Math.PI * 3 + 1, 0)
         mesh.castShadow = true
