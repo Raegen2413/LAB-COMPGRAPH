@@ -18,26 +18,28 @@ function createGround(){
     scene.add(groundMesh)
 }
 
+var balloon
 // 5.b. Hot Air Balloon
 function renderBalloon(){
     let loader = new GLTFLoader()
     loader.load('./assets/model/scene.gltf', function (gltf){
         let model = gltf.scene
         // let animation = gltf.animations[0]
-        let mixer = new THREE.AnimationMixer(model)
+        // let mixer = new THREE.AnimationMixer(model)
         // let action = mixer.clipAction(animation)
         model.castShadow = true
         model.receiveShadow = true
         // action.play()
         model.scale.set(0.1, 0.1, 0.1)
-        scene.add(model)
-        animate()
-        function animate(){
-            renderer.render(scene, currentCam)
-            requestAnimationFrame(animate)
-            let delta = new THREE.Clock().getDelta()
-            mixer.update(delta)
-        }
+        balloon = model
+        scene.add(balloon)
+        // animate()
+        // function animate(){
+        //     renderer.render(scene, currentCam)
+        //     requestAnimationFrame(animate)
+        //     let delta = new THREE.Clock().getDelta()
+        //     mixer.update(delta)
+        // }
     })
 }
 
@@ -84,7 +86,8 @@ function createTires(posX, posY, posZ, rotX, rotY, rotZ){
 }
 
 // 5.f. Poles
-function createPoles(posX, posY, posZ, rotX, rotY, rotZ){
+var pole = [null]
+function createPoles(number, posX, posY, posZ, rotX, rotY, rotZ){
     let polesGeo = new THREE.CylinderGeometry(1, 1, 50, 16)
     let polesMat = new THREE.MeshPhongMaterial({
         color: "#646FD4"
@@ -94,7 +97,8 @@ function createPoles(posX, posY, posZ, rotX, rotY, rotZ){
     polesMesh.rotation.set(rotX, rotY, rotZ)
     polesMesh.castShadow = true
     polesMesh.receiveShadow = true
-    scene.add(polesMesh)
+    pole[number] = polesMesh
+    scene.add(pole[number])
 }
 
 // 5.g. Button (box and sphere) INCOMPLETE!! blm bisa berubah warna dan di interact
@@ -111,6 +115,7 @@ function createButtonBox(){
     scene.add(buttonBoxMesh)
 }
 
+var tombol
 function createButtonSphere(){
     let buttonSphereGeo = new THREE.SphereGeometry(4.5, 32, 16)
     let buttonSphereMat = new THREE.MeshPhongMaterial({
@@ -120,7 +125,23 @@ function createButtonSphere(){
     buttonSphereMesh.position.set(-46, 3, 63)
     buttonSphereMesh.castShadow = true
     buttonSphereMesh.receiveShadow = true
-    scene.add(buttonSphereMesh)
+    tombol = buttonSphereMesh
+    scene.add(tombol)
+}
+
+var eventStatus = "idle"
+var doRotation = false
+function buttonEvent(){
+    let btnColor = tombol.material.color
+
+    if(eventStatus == "idle"){
+        btnColor.set("#fada5e")
+        eventStatus = "raisePoles"
+    }else if(eventStatus == "readyToFly"){
+        eventStatus = "fly"
+    }else if(doRotation){
+        btnColor.set("#32cd32")
+    }
 }
 
 // 4.a. Ambient Light
@@ -137,6 +158,7 @@ function createSpotLight(intensity, x, y, z, angle){
     scene.add(light)
 }
 
+/**********************************************************/
 function init() {
     // 2. Scene
     scene = new THREE.Scene()
@@ -159,7 +181,7 @@ function init() {
     textureLoader = new THREE.TextureLoader()
 
     control = new OrbitControls(freeCam, renderer.domElement)
-    currentCam = freeCam
+    currentCam = fixedCam
 
     createAmbientLight()
     createSpotLight(1, -100, 0, 100)
@@ -177,11 +199,12 @@ function init() {
     createTires(-65, -5, -20, 0, -(Math.PI/2 + (Math.PI/9 * 1)), 0)
     createTires(-55, -5, 40, 0, Math.PI/2 + (Math.PI/9 * 2), 0)
     createTires(-55, -5, -40, 0, -(Math.PI/2 + (Math.PI/9 * 2)), 0)
-    createPoles(0, 15, 35, -Math.PI/6, 0, 0)
-    createPoles(0, 15, -35, Math.PI/6, 0, 0)
+    createPoles(1, 0, 15, 35, -Math.PI/6, 0, 0)
+    createPoles(2, 0, 15, -35, Math.PI/6, 0, 0)
     createButtonBox()
     createButtonSphere()
 }
+/**********************************************************/
 
 function keyboardListener(event){
     if(event.keyCode == 32){
@@ -191,24 +214,74 @@ function keyboardListener(event){
 }
 
 function mouseClick(){
-    const raycaster = new THREE.Raycaster()
-    raycaster.setFromCamera(mouse, camera)
-    // const intersects = raycaster.intersectObjects(scene.children)
+    if(currentCam == freeCam) return
+
+    let raycaster = new THREE.Raycaster()
+    raycaster.setFromCamera(mouse, currentCam)
+    const intersects = raycaster.intersectObjects(scene.children)
+
+    if(intersects[0].object == tombol){
+        buttonEvent()
+    }
 }
 
 function addListener(){
     document.addEventListener("keydown", keyboardListener)
-    // document.addEventListener("click", mouseClick)
+    document.addEventListener("click", mouseClick)
 }
 
+var speed = 0.005
+var tilt = 0.001
 function render(){
     control.update()
     requestAnimationFrame(render)
     renderer.render(scene, currentCam)
+
+    if(currentCam == freeCam) return
+
+    if(eventStatus == "raisePoles"){
+
+        if(pole[1].rotation.x < 0 && pole[1].rotation.x + speed < 0){
+            pole[1].rotation.x += speed
+        }else pole[1].rotation.x = 0
+
+        if(pole[2].rotation.x > 0 && pole[2].rotation.x - speed > 0){
+            pole[2].rotation.x -= speed
+        }
+        
+        if(pole[1].rotation.x >= 0){
+            eventStatus = "readyToFly"
+        }
+    }else if(eventStatus == "fly"){
+        balloon.position.y += speed * 2
+        if(balloon.position.y > 20){
+            doRotation = true
+            buttonEvent()
+        }
+    }
+
+    if(doRotation){
+        balloon.position.y += speed * 6
+        console.log(balloon.rotation.x)
+        if(balloon.rotation.x > 0.15 || balloon.rotation.x < -0.15){
+            tilt *= -1
+        }
+        balloon.rotation.x += tilt
+        balloon.rotation.y += 0.001
+    }
 }
 
 window.onload = function () {
     init()
     addListener()
     render()
+}
+
+// Get mouse position
+window.onmousemove = function(event){
+    mouse = new THREE.Vector2()
+
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+
+    mouse.y = -((event.clientY / window.innerHeight) * 2 - 1)
 }
