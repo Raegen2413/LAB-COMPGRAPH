@@ -25,22 +25,11 @@ function renderBalloon(){
     let loader = new GLTFLoader()
     loader.load('./assets/model/scene.gltf', function (gltf){
         let model = gltf.scene
-        // let animation = gltf.animations[0]
-        // let mixer = new THREE.AnimationMixer(model)
-        // let action = mixer.clipAction(animation)
         model.castShadow = true
         model.receiveShadow = true
-        // action.play()
         model.scale.set(0.1, 0.1, 0.1)
         balloon = model
         scene.add(balloon)
-        // animate()
-        // function animate(){
-        //     renderer.render(scene, currentCam)
-        //     requestAnimationFrame(animate)
-        //     let delta = new THREE.Clock().getDelta()
-        //     mixer.update(delta)
-        // }
     })
 }
 
@@ -159,9 +148,25 @@ function createSpotLight(intensity, x, y, z, angle){
     scene.add(light)
 }
 
-// 5.h. Text\
+// 5.h. Text
 function createFont(){
     let loader = new FontLoader()
+    loader.load('./three.js/examples/fonts/helvetiker_bold.typeface.json', function (font1){
+        
+        let geo = new TextGeometry
+        ('Click Me!',{
+            font:font1,
+            size:10,
+            height:2
+        })
+        let material = new THREE.MeshPhongMaterial()
+        mesh = new THREE.Mesh(geo, material)
+        mesh.position.set(-35,25,50)
+        mesh.rotation.set(0, Math.PI * 3 + 1, 0)
+        mesh.castShadow = true
+        mesh.receiveShadow = true
+        scene.add(mesh)
+     })
 }
 
 // 6 Skybox
@@ -253,6 +258,7 @@ function init() {
     createButtonBox()
     createButtonSphere()
     createSkybox()
+    createFont()
 }
 /**********************************************************/
 
