@@ -162,7 +162,7 @@ function createFont(){
         })
         let material = new THREE.MeshPhongMaterial({
             color: "#FF5B00",
-            speculare: "#990000"
+            specular: "#990000"
         })
         let mesh = new THREE.Mesh(geo, material)
         mesh.position.set(-35,25,50)
@@ -322,7 +322,7 @@ function render(){
 
     if(doRotation){
         balloon.position.y += speed * 6
-        console.log(balloon.rotation.x)
+        
         if(balloon.rotation.x > 0.15 || balloon.rotation.x < -0.15){
             tilt *= -1
         }
